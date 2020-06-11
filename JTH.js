@@ -12,6 +12,7 @@ class JTH
 		{
 			throw new Error('Data not defined;')
 		}
+		this.renderedJSON=[];
 		this.templateElement={};
 		this.jsonObj=(prop.data);
 		
@@ -61,7 +62,8 @@ class JTH
 	
 	render()
 	{
-		 return this.HTMLdata ;
+		this.renderedJSON=JSON.parse('['+this.renderedJSON.join(',')+']')
+		return this.HTMLdata ;
 	}
 	
 	__key_child(child)
@@ -104,11 +106,13 @@ class JTH
 		
 		if(Object.keys(ctdn['case']).indexOf(ctdn.key)>-1)
 		{
+			this.renderedJSON.push(JSON.stringify(ctdn['case'][ctdn.key]));
 			return this.__createElement__(ctdn['case'][ctdn.key]);
 		}
 		
 		if(ctdn['case'].hasOwnProperty('def'))
 		{
+			this.renderedJSON.push(JSON.stringify(ctdn['case']['def']));
 			return this.__createElement__(ctdn['case']['def']);
 		}
 		console.warn('Cannot find value in switch')
@@ -132,6 +136,7 @@ class JTH
 		
 		if(eval(objkeyIf[0]))
 		{
+			this.renderedJSON.push(JSON.stringify(__if[objkeyIf[0]]));
 			return this.__createElement__(__if[objkeyIf[0]]);
 		}
 		if(ctdn.hasOwnProperty('elif'))
@@ -139,11 +144,13 @@ class JTH
 			let objkeyElif=Object.keys(__elif);
 			if(eval(objkeyElif[0]))
 			{
+				this.renderedJSON.push(JSON.stringify(__elif[objkeyElif[0]]));
 				return this.__createElement__(__elif[objkeyElif[0]]);
 			}
 		}
 		if(ctdn.hasOwnProperty('else'))
 		{
+			this.renderedJSON.push(JSON.stringify(__else));
 			return this.__createElement__(__else);
 		}
 		console.warn('Cannot find value in if')
@@ -283,7 +290,7 @@ class JTH
 					}
 				}
 			}
-			
+			this.renderedJSON.push(JSON.stringify(obj));
 			//({tag,child,ctdn,loop,code,...prop}=obj);
 			let tempObject=Object.assign({},obj);
 			/*MOVED CHILD TO __defineProperties*/
@@ -301,15 +308,19 @@ class JTH
 			
 			if(!!template)
 			{
-				__HTMLTEXT__+=this.__key_template(template);
+				let rendered=this.__key_template(template);
+				__HTMLTEXT__+=rendered;
+				
 			}
 			if(!!ctdn)
 			{
-				__HTMLTEXT__+=this.__key_ctdn(ctdn);
+				let rendered=this.__key_ctdn(ctdn);
+				__HTMLTEXT__+=rendered;
 			}
 			if(!!loop)
 			{
-				__HTMLTEXT__+=this.__key_loop(loop);
+				let rendered=this.__key_loop(loop);
+				__HTMLTEXT__+=rendered;
 			}
 			if(!!tag)
 			{
@@ -379,6 +390,7 @@ class JTH
 		while(eval(tem))
 		{
 			eval(code);
+			this.renderedJSON.push(JSON.stringify(stmt));
 			ret_ele.push(this.__createElement__(JSON.parse(JSON.stringify(stmt))));
 		}
 		return ret_ele.join('');
@@ -405,6 +417,7 @@ class JTH
 		
 		do
 		{
+			this.renderedJSON.push(JSON.stringify(__loop[__data]));
 			ret_ele.push(this.__createElement__(JSON.parse(JSON.stringify(__loop[__data])),'loop'));
 		}while(eval(__eval__code));
 		
@@ -432,6 +445,7 @@ class JTH
 		
 		while(eval(__eval__code))
 		{
+			this.renderedJSON.push(JSON.stringify(__loop[__data]));
 			ret_ele.push(this.__createElement__(JSON.parse(JSON.stringify(__loop[__data])),'loop'));
 		}
 		return ret_ele.join('');
@@ -507,6 +521,7 @@ class JTH
 			throw new Error("Template "+__template+" undefined");
 		}
 		//MAKE OBJ AS ARRAY
+		this.renderedJSON.push(JSON.stringify(this.templates[__template]));
 		 return this.__createElement__(this.templates[__template]);
 	}
 	getRawDataType(obj)

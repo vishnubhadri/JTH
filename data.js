@@ -46,7 +46,7 @@ var __content=[
 		{
 			"ctdn":
 			{
-				"if":{"1==0":[{"tag":"label","text":"test if"}]},
+				"if":{"1==1":[{"tag":"label","text":"test if"}]},
 				"elif":{"1==2":[{"tag":"label","text":"test else if"}]},
 				"else":[{"tag":"label","text":"test else"}]
 			}
@@ -90,7 +90,14 @@ var __content=[
 				}
 			}
 		},
-		{"template":"table"}
+		{"template":"table"},
+		{
+			"tag":"input",
+			"type":"range",
+			"max":"100",
+			"min":"0",
+			"step":"25"
+		}
 	]
 	
 var	__templates=
