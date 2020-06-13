@@ -3,6 +3,7 @@ var __content=[
 			"var":"me={'tag':'label','text':document.getElementById('u').value}",
 			"tag":"div",
 			"class":"red",
+			"cursor":"pointer",
 			"child":[
 				{
 					"width":"100px",
@@ -11,6 +12,7 @@ var __content=[
 					"type":"text",
 					"id":"u",
 					"value":"hello",
+					"tabindex":"0",
 					"lbl":{"pos":"L|R|T|B","txt":"Username"}
 				},
 				{

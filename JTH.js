@@ -6,7 +6,10 @@ class JTH
 	}
 	constructor(prop)
 	{
-		
+		{
+			let a=document.createElement('a');
+			this.StyleKeys=Object.keys(a.style);
+		}
 		this.VARIABLE='$';
 		if(!prop.hasOwnProperty('data'))
 		{
@@ -15,6 +18,16 @@ class JTH
 		this.renderedJSON=[];
 		this.templateElement={};
 		this.jsonObj=(prop.data);
+		
+		if(this.getRawDataType(this.jsonObj)=="string")
+		{
+			this.jsonObj=JSON.parse(this.jsonObj);
+		}
+		
+		if(this.getRawDataType(this.jsonObj)=="object")
+		{
+			this.jsonObj=[(this.jsonObj)];
+		}
 		
 		this.templates=prop.templates||{};
 		
@@ -283,7 +296,7 @@ class JTH
 					let variable = obj[__var__].split(this.VARIABLE)
 					for(let _____i=1;_____i<variable.length;_____i++)
 					{
-						let keyWord=variable[_____i].split(' ')[0];
+						let keyWord=variable[_____i].split(new RegExp('[\\ \\s\\'+this.VARIABLE+'\\)\\]]','g'))[0];
 						let ____replace = this.VARIABLE+keyWord;
 						//let ____re = new RegExp(____replace,"g");
 						Object.defineProperty(obj,__var__,{"value":(obj[__var__].replace(____replace,eval(keyWord))),"writable":false})
@@ -495,16 +508,32 @@ class JTH
 					__element__["defaultChecked"]=prop[__prop__.toLowerCase()];
 					break;
 				}
+				case ("tabindex"):
+				{
+					__element__["tabIndex"]=prop[__prop__.toLowerCase()];
+					break;
+				}
 				case ("class"):
 				{
-					if(this.getRawDataType(__prop__)=="string"||this.getRawDataType(__prop__)=="array")
+					if(this.getRawDataType(__prop__)=="array")
+					{	
+						__element__["classList"]=(".")+prop[__prop__].join(' .');
+					}
+					if(this.getRawDataType(__prop__)=="string")
 					{	
 						__element__["classList"]=prop[__prop__].toString();
 					}
 					break;
 				}
 				default:
+				{
+					//SET STYLE ATTR
+					if(this.StyleKeys.indexOf(__prop__)>-1)
+					{
+						__element__['style'][__prop__]=prop[__prop__];
+					}
 					__element__[__prop__]=prop[__prop__];
+				}
 			}
 		}
 		if(props.length>0)
