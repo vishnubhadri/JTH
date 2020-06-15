@@ -226,7 +226,6 @@ class JTH extends Object {
 			}
 
 			if (!!code) {
-				debugger
 				if (this.getRawDataType(code) == "array") {
 					for (let codeStr of code) {
 						__let_var = this.__key_code(codeStr, __let_var);
@@ -257,13 +256,33 @@ class JTH extends Object {
 			}
 			//CONVERT VARIABLE TO VALUE
 			for (let __var__ in obj) {
-				if (this.getRawDataType(obj[__var__]) == 'string' && obj[__var__].indexOf(this.VARIABLE) > -1 && ['code', 'let', 'var'].indexOf(__var__) == -1) {
+				if (['code', 'let', 'var'].indexOf(__var__) == -1 && this.getRawDataType(obj[__var__]) == 'string' && obj[__var__].indexOf(this.VARIABLE) > -1) {
 					let variable = obj[__var__].split(this.VARIABLE)
 					for (let _____i = 1; _____i < variable.length; _____i++) {
 						let keyWord = variable[_____i].split(new RegExp('[\\ \\' + this.VARIABLE + ']', 'g'))[0];
 						let ____replace = this.VARIABLE + keyWord;
 						//let ____re = new RegExp(____replace,"g");
-						Object.defineProperty(obj, __var__, { "value": (obj[__var__].replace(____replace, eval(keyWord))), "writable": false })
+						try {
+							Object.defineProperty(obj, __var__, { "value": (obj[__var__].replace(____replace, eval(keyWord))), "writable": false })
+						} catch (e) {
+							console.warn('String to code convertion failed. Retrying using JavaScript eval.', e);
+
+							let keyWord = obj[__var__].replace(new RegExp('[\\' + this.VARIABLE + ']', 'g'), '');
+							let function_name = keyWord.split('\(')[0];
+							if (eval(function_name + ' instanceof Function')) {
+								let __param = obj[__var__].substring(obj[__var__].indexOf('(') + 1., obj[__var__].lastIndexOf(')')).split(',');
+								for (let ___param = 0; ___param < __param.length; ___param++) {
+									if (__param[___param].indexOf(this.VARIABLE) > -1) {
+										__param[___param] = JSON.stringify(eval(__param[___param].replace(new RegExp('[\\' + this.VARIABLE + ']', 'g'), '')));
+									}
+								}
+
+								Object.defineProperty(obj, __var__, { "value": function_name + '(' + __param.join(',') + ')', "writable": false });
+							} else {
+								Object.defineProperty(obj, __var__, { "value": eval(keyWord), "writable": false });
+							}
+							break;
+						}
 					}
 				}
 			}
@@ -446,10 +465,10 @@ class JTH extends Object {
 					}
 				case ("class"):
 					{
-						if (this.getRawDataType(__prop__) == "array") {
-							__element__["classList"] = (".") + prop[__prop__].join(' .');
+						if (this.getRawDataType(prop[__prop__]) == "array") {
+							__element__["classList"] = prop[__prop__].join(' ');
 						}
-						if (this.getRawDataType(__prop__) == "string") {
+						if (this.getRawDataType(prop[__prop__]) == "string") {
 							__element__["classList"] = prop[__prop__].toString();
 						}
 						break;
