@@ -73,7 +73,17 @@ var __content = [
 				"tem": "$a<1",
 				"var": "a=0",
 				"code": "$a++",
-				"stmt": [{ 'tag': 'br' }, { "tag": "label", "text": "I am loop representing $a" }],
+				"stmt": [{ 'tag': 'br' }, { "tag": "label", "text": "I am loop representing $a " }],
+			}
+		}
+	},
+	{
+		"loop": {
+			"for": {
+				"tem": "$b<3",
+				"var": "b=1",
+				"code": "$b++",
+				"stmt": [{ 'tag': 'br' }, { "tag": "label", "text": "test \$ on loop count $b" }],
 			}
 		}
 	},
@@ -115,7 +125,9 @@ var __content = [
 		},
 		"tag": "label",
 		"text": " From Loop"
-	}
+	},
+	{ "tag": "label","text": "<br>TEST \$ in text \$" },
+
 ]
 
 var __templates =
