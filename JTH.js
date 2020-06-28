@@ -1,12 +1,13 @@
 class JTH extends Object {
 	constructor(prop) {
+		
 		super();
 		{
 			let a = document.createElement('a');
 			this.StyleKeys = Object.keys(a.style);
 		}
 		this.VARIABLE = '$';
-
+		
 		if (!prop.hasOwnProperty('data')) {
 			throw new Error('Data not defined;')
 		}
@@ -206,7 +207,72 @@ class JTH extends Object {
 		}
 		return __let_var;
 	}
+	
+	/** function that parse data*/
+	___0x0001(obj)
+	{
+		for (let __var__ in obj) {
+			if (['code', 'let', 'var'].indexOf(__var__) == -1 && this.getRawDataType(obj[__var__]) == 'string' && obj[__var__].indexOf(this.VARIABLE) > -1) {
+				let _____0x00002=false;//SKIP ITERATION
+				let variable = obj[__var__].split(this.VARIABLE)
+				if(variable[0].endsWith("\\"))
+				{
+					variable[0]=variable[0].substring(0,variable[0].length-1)
+					_____0x00002=true;
+					Object.defineProperty(obj, __var__, { "value": variable.join('$'), "writable": false });
+				}
+				for (let _____i = 1; ( _____i < variable.length)&&(!_____0x00002); _____i++) {
+					if(variable[_____i].endsWith("\\"))
+					{
+						variable[_____i]=variable[_____i].substring(0,variable[_____i].length-1)+this.VARIABLE+variable[_____i+1];
+						Object.defineProperty(obj, __var__, { "value": variable.join('$'), "writable": false });
+						_____0x00002=true;
+						continue;
+					}
+					_____0x00002=false;
+					let keyWord = variable[_____i].split(new RegExp('[\\ \\' + this.VARIABLE + ']', 'g'))[0];
+					if(keyWord.length<1||keyWord[0]==" "||keyWord.indexOf("\ ")>0)
+					{
+						continue;
+					}
+					let ____replace = this.VARIABLE + keyWord;
+					//let ____re = new RegExp(____replace,"g");
+					try {
+						Object.defineProperty(obj, __var__, { "value": (obj[__var__].replace(____replace, eval(keyWord))), "writable": false })
+					} catch (e) {
+						console.warn('String to code convertion failed. Retrying using JavaScript eval.', e);
 
+						let keyWord = obj[__var__].replace(new RegExp('[\\' + this.VARIABLE + ']', 'g'), '');
+						let function_name = keyWord.split('\(')[0];
+						if(!(/\s/g.test(function_name)))
+						{
+							try{
+								if (eval(function_name + ' instanceof Function')) {
+									let __param = obj[__var__].substring(obj[__var__].indexOf('(') + 1., obj[__var__].lastIndexOf(')')).split(',');
+									for (let ___param = 0; ___param < __param.length; ___param++) {
+										if (__param[___param].indexOf(this.VARIABLE) > -1) {
+											__param[___param] = JSON.stringify(eval(__param[___param].replace(new RegExp('[\\' + this.VARIABLE + ']', 'g'), '')));
+										}
+									}
+		
+									Object.defineProperty(obj, __var__, { "value": function_name + '(' + __param.join(',') + ')', "writable": false });
+								} else {
+									Object.defineProperty(obj, __var__, { "value": eval(keyWord), "writable": false });
+								}
+							}
+							catch(e)
+							{
+								throw new Error ('String to code convertion failed', e);
+							}
+						}
+						break;
+					}
+				}
+			}
+		}
+		return obj;
+	}
+	
 	__createElement__(resp, ___canEval) {
 		let __HTMLTEXT__ = "";
 		if (this.getRawDataType(resp) == "object") {
@@ -256,60 +322,7 @@ class JTH extends Object {
 				}
 			}
 			//CONVERT VARIABLE TO VALUE
-			for (let __var__ in obj) {
-				if (['code', 'let', 'var'].indexOf(__var__) == -1 && this.getRawDataType(obj[__var__]) == 'string' && obj[__var__].indexOf(this.VARIABLE) > -1) {
-					let variable = obj[__var__].split(this.VARIABLE)
-					if(variable[0].endsWith("\\"))
-					{
-						variable[0]=variable[0].slice(0,-1)+this.VARIABLE;
-					}
-					for (let _____i = 1; _____i < variable.length; _____i++) {
-						if(variable[_____i].endsWith("\\"))
-						{
-							variable[_____i]=variable[_____i].slice(0,-1)+this.VARIABLE;
-							continue;
-						}
-						let keyWord = variable[_____i].split(new RegExp('[\\ \\' + this.VARIABLE + ']', 'g'))[0];
-						if(keyWord.length<1||keyWord[0]==" "||keyWord.indexOf("\ ")>0)
-						{
-							continue;
-						}
-						let ____replace = this.VARIABLE + keyWord;
-						//let ____re = new RegExp(____replace,"g");
-						try {
-							Object.defineProperty(obj, __var__, { "value": (obj[__var__].replace(____replace, eval(keyWord))), "writable": false })
-						} catch (e) {
-							console.warn('String to code convertion failed. Retrying using JavaScript eval.', e);
-
-							let keyWord = obj[__var__].replace(new RegExp('[\\' + this.VARIABLE + ']', 'g'), '');
-							let function_name = keyWord.split('\(')[0];
-							if(!(/\s/g.test(function_name)))
-							{
-								try{
-									if (eval(function_name + ' instanceof Function')) {
-										let __param = obj[__var__].substring(obj[__var__].indexOf('(') + 1., obj[__var__].lastIndexOf(')')).split(',');
-										for (let ___param = 0; ___param < __param.length; ___param++) {
-											if (__param[___param].indexOf(this.VARIABLE) > -1) {
-												__param[___param] = JSON.stringify(eval(__param[___param].replace(new RegExp('[\\' + this.VARIABLE + ']', 'g'), '')));
-											}
-										}
-		
-										Object.defineProperty(obj, __var__, { "value": function_name + '(' + __param.join(',') + ')', "writable": false });
-									} else {
-										Object.defineProperty(obj, __var__, { "value": eval(keyWord), "writable": false });
-									}
-								}
-								catch(e)
-								{
-									throw new Error ('String to code convertion failed', e);
-								}
-							}
-							break;
-						}
-					}
-				}
-			}
-			
+			obj=this.___0x0001(obj)
 			
 			this.renderedJSON.push(JSON.stringify(obj));
 			//({tag,child,ctdn,loop,code,...prop}=obj);

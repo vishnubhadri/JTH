@@ -126,8 +126,28 @@ var __content = [
 		"tag": "label",
 		"text": " From Loop"
 	},
-	{ "tag": "label","text": "<br>TEST \$ in text \$" },
-
+	{ "tag": "label","text": "<br>TEST $tet in text $" },
+	{
+		"tag": "div",
+		"id": "variable",
+		"child": [
+			{
+				"text": "Variables",
+				"tag": "h2"
+			},
+			{
+				"var":"_a=12",
+				"tag": "p",
+				/*DOLLOR SYMBLE NOT WORKING*/
+				"text": "JTH uses variables that can use across the json as same as other programming language. It support both primitive and non-primitive variables." +
+					"In JTH the variable can be define and access with $ symbol."
+			},
+			{
+				"tag":"code",
+				"text":"[{'code':'_a=10'},{'tag':'textarea','text':'\\$a'}]"
+			}
+		]
+	}
 ]
 
 var __templates =
