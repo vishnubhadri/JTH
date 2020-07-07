@@ -273,7 +273,7 @@ class JTH extends Object {
 		return obj;
 	}
 	
-	__createElement__(resp, ___canEval) {
+	__createElement__(resp,___canEval) {
 		let __HTMLTEXT__ = "";
 		if (this.getRawDataType(resp) == "object") {
 			resp = [resp];
@@ -282,10 +282,11 @@ class JTH extends Object {
 		for (let obj of resp) {
 			let __let_var = {};
 			let __element__;
-			let tag, __var, __let, child, ctdn, code, loop, template, prop = [];
+			let tag, __var, __let, child, ctdn, code, loop, template,comments, prop = [];
 			__var = obj['var'];
 			__let = obj['let'];
 			code = obj['code'];
+			comments = obj['comments'];
 
 			//CREATE LOCAL VARIABLE(let)
 			if (!!__let) {
@@ -338,8 +339,12 @@ class JTH extends Object {
 			delete tempObject.code;
 			delete tempObject.template;
 			prop = tempObject;
+			
+			if (!!comments) {
+				let rendered = this.__key_comments(comments);
+				__HTMLTEXT__ += rendered;
 
-
+			}
 			if (!!template) {
 				let rendered = this.__key_template(template);
 				__HTMLTEXT__ += rendered;
@@ -534,6 +539,10 @@ class JTH extends Object {
 		//MAKE OBJ AS ARRAY
 		this.renderedJSON.push(JSON.stringify(this.templates[__template]));
 		return this.__createElement__(this.templates[__template]);
+	}
+	
+	__key_comments(__comments) {
+		return "<!--"+ __comments +"-->"
 	}
 	getRawDataType(obj) {
 		return Object.prototype.toString.call(obj).slice(8, -1).toLowerCase();

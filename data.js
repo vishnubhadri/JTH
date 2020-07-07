@@ -4,6 +4,7 @@ var __content = [
 		"tag": "div",
 		"class": "red",
 		"cursor": "pointer",
+		"comments": "TEST",
 		"child": [
 			{
 				"width": "100px",
@@ -115,6 +116,7 @@ var __content = [
 		"var": "hello=Hello World!!!"
 	},
 	{
+		"var":"z=100",
 		"loop": {
 			"for": {
 				"var": "b=0",
@@ -138,7 +140,6 @@ var __content = [
 			{
 				"var":"_a=12",
 				"tag": "p",
-				/*DOLLOR SYMBLE NOT WORKING*/
 				"text": "JTH uses variables that can use across the json as same as other programming language. It support both primitive and non-primitive variables." +
 					"In JTH the variable can be define and access with $ symbol."
 			},
