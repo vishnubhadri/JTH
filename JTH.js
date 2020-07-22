@@ -557,3 +557,4 @@ class JTH extends Object {
 	}
 
 }
+module.exports=JTH;
