@@ -148,7 +148,8 @@ var __content = [
 				"text":"[{'code':'_a=10'},{'tag':'textarea','text':'\\$a'}]"
 			}
 		]
-	}
+	},
+	{ "tag": "label","text": "Text with Attribute","test_attr":"test_attr" },
 ]
 
 var __templates =

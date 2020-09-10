@@ -5,6 +5,7 @@ class JTH extends Object {
 		{
 			let a = document.createElement('a');
 			this.StyleKeys = Object.keys(a.style);
+			this.properties = Object.keys(a);
 		}
 		this.VARIABLE = '$';
 		
@@ -521,6 +522,10 @@ class JTH extends Object {
 						//SET STYLE ATTR
 						if (this.StyleKeys.indexOf(__prop__) > -1) {
 							__element__['style'][__prop__] = prop[__prop__];
+						}
+						if(this.properties.indexOf(__prop__) < 0)
+						{
+							__element__.setAttribute(__prop__,prop[__prop__]);
 						}
 						__element__[__prop__] = prop[__prop__];
 					}
